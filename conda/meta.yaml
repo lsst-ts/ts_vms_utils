@@ -1,0 +1,40 @@
+{% set data = load_setup_py_data() %}
+
+package:
+  name: ts-vms-utils
+  version: {{ data.get('version') }}
+
+source:
+  path: ../
+
+build:
+  noarch: python
+  script: {{PYTHON}} -m pip install --no-deps --ignore-installed .
+  entry_points:
+    - vms-data = lsst.ts.vms.utils.vms_data:run
+
+test:
+  requires:
+    - ts-conda-build ==0.4
+    - astropy
+    - ts-xml
+    - lsst-efd-client
+  source_files:
+    - python
+    - tests
+  commands:
+    - pytest
+
+requirements:
+  build:
+    - python {{python}}
+    - ts-conda-build ==0.4
+  host:
+    - python {{python}}
+    - setuptools
+    - setuptools_scm
+  run:
+    - python {{python}}
+    - astropy
+    - ts-xml
+    - lsst-efd-client
